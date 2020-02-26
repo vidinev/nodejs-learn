@@ -1,26 +1,24 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import { loshSequelize } from './sequelize';
-import { User } from './models/user.model';
-
+const cors = require('cors');
+const bodyParser = require('body-parser');
+import { config } from './config';
+import api from './api';
 
 const app = express();
-dotenv.config();
 
-app.get('/', (req, res) => res.send('Hello World 123!'));
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use('/api', api);
 
-(async () => {
-  await loshSequelize.authenticate();
-  await User.sync({ force: true });
-
-  await User.create({
-    nickName: 'Anvid',
-    email: 'test@test.com',
-    password: '123'
+function startServer() {
+  app.listen(config.port, (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(`Your server is ready !`);
   });
-  const users = await User.findAll();
-  console.log("All users:", JSON.stringify(users, null, 4));
-})();
+}
 
-
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+startServer();

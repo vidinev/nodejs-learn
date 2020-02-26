@@ -1,13 +1,12 @@
 import Sequelize from 'sequelize';
-import dotenv from 'dotenv';
-dotenv.config();
+import { config } from './config';
 
 export const loshSequelize = new (Sequelize as any)(
-  process.env.DB_NAME,
-  process.env.DB_USERNAME,
-  process.env.DB_PASS,
+  config.db.name,
+  config.db.userName,
+  config.db.pass,
   {
-    host: process.env.DB_HOST,
+    host: config.db.host,
     dialect: 'postgres'
   });
 
