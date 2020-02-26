@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { signUp } from './sign-up';
+import { signUp, signUpValidator } from './sign-up';
 
 const router = Router();
 
-router.post('/sign-up', signUp);
+router.post('/sign-up', [signUpValidator, signUp]);
 
 export = router;
