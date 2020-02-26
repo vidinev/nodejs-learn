@@ -1,19 +1,14 @@
 import Sequelize from 'sequelize';
 import { loshSequelize } from '../sequelize';
+const bCrypt = require('bcrypt');
 
 const Model = Sequelize.Model;
 
 export class User extends Model {
-  nickName: string;
   email: string;
   password: string;
 }
 User.init({
-  // attributes
-  nickName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
   email: {
     type: Sequelize.STRING,
     allowNull: false
@@ -24,5 +19,10 @@ User.init({
   }
 }, {
   sequelize: loshSequelize,
-  modelName: 'user'
+  modelName: 'user',
+  hooks: {
+    beforeCreate: (user, options) => {
+      user.password = bCrypt.hashSync(user.password, 10);
+    },
+  }
 });
