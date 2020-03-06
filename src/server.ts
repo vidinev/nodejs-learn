@@ -13,11 +13,12 @@ app.use(bodyParser.json());
 
 app.use('/api', api);
 
-function startServer() {
-  loshSequelize
-    .authenticate()
-    .then(() => console.log('Connection has been established successfully.'))
-    .catch((err: any) => console.error('Unable to connect to the database:', err));
+async function startServer() {
+  try {
+    await loshSequelize.authenticate();
+  } catch (e) {
+    console.error('Sequelize auth error');
+  }
 
   app.listen(config.port, (err) => {
     if (err) {
@@ -28,4 +29,4 @@ function startServer() {
   });
 }
 
-startServer();
+(async () => await startServer())();
