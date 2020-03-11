@@ -1,7 +1,12 @@
-import { Table, Column, Model, IsUUID, PrimaryKey, Unique, BeforeCreate } from 'sequelize-typescript';
+import { Table, Column, Model, IsUUID, PrimaryKey, Unique, BeforeCreate, DefaultScope } from 'sequelize-typescript';
 const bCrypt = require('bcrypt');
 const uuid = require('uuid/v4');
 
+@DefaultScope(() => ({
+  attributes: {
+    exclude: ['password']
+  }
+}))
 @Table({
   timestamps: true
 })
@@ -37,10 +42,15 @@ export class User extends Model<User> {
   @Column
   password: string;
 
-
   @BeforeCreate
   static hashPassword(instance: User) {
     instance.password = bCrypt.hashSync(instance.password, 10);
     instance.id = uuid();
   }
 }
+
+User.prototype.toJSON =  function () {
+  const values = Object.assign({}, this.get());
+  delete values.password;
+  return values;
+};
