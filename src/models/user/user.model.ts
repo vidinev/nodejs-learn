@@ -1,6 +1,6 @@
 import { Table, Column, Model, IsUUID, PrimaryKey, Unique, BeforeCreate, DefaultScope } from 'sequelize-typescript';
+import { v4 as uuidv4 } from 'uuid';
 const bCrypt = require('bcrypt');
-const uuid = require('uuid/v4');
 
 @DefaultScope(() => ({
   attributes: {
@@ -45,7 +45,7 @@ export class User extends Model<User> {
   @BeforeCreate
   static hashPassword(instance: User) {
     instance.password = bCrypt.hashSync(instance.password, 10);
-    instance.id = uuid();
+    instance.id = uuidv4();
   }
 }
 

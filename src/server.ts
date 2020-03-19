@@ -1,37 +1,23 @@
 import express from 'express';
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 import api from './api';
-import { config } from './config';
-import { loshSequelize } from './sequelize'
-import { logErrors } from './helpers/log-errors-middleware';
-import { errorHandler } from './helpers/error-handler-middleware';
+
+import { errorHandlerMiddleware } from './helpers/error-handler-middleware';
+import { dbErrorHandlerMiddleware } from './helpers/db-error-handler-middleware';
+import { startApp } from './runners/start-app'
 
 const app = express();
 
 app.use(cors());
+app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('/api', api);
 
-app.use(logErrors);
-app.use(errorHandler);
+app.use(dbErrorHandlerMiddleware);
+app.use(errorHandlerMiddleware);
 
-async function startServer() {
-  try {
-    await loshSequelize.authenticate();
-  } catch (error) {
-    console.error('Sequelize auth error');
-  }
-
-  app.listen(config.port, (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(`Your server is ready! ${config.port}`);
-  });
-}
-
-(async () => await startServer())();
+(async () => await startApp(app))();

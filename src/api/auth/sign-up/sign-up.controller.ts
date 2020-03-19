@@ -1,14 +1,19 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { User } from '../../../models/user/user.model';
-import { getSequelizeError } from '../../../helpers/get-sequelize-error';
+import { ErrorThrow } from '../../../helpers/custom-errors/throw-error.namespace';
+const HttpStatus = require('http-status-codes');
 
-export const signUp = async (req: Request, res: Response) => {
+export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   const userParams: User = req.body;
   try {
-    const createdUser = await User.create(userParams);
-    res.send(createdUser);
+    if (await User.findOne({ where: { email: userParams.email } })) {
+      return ErrorThrow.conflict(`Email ${userParams.email} is already taken`);
+    }
+
+    await User.create(userParams);
+    res.sendStatus(HttpStatus.CREATED);
   } catch (error) {
-    res.status(500)
-      .send(getSequelizeError(error, `Can't create User`));
+    console.log('Sign Up error');
+    return next(error);
   }
 };
