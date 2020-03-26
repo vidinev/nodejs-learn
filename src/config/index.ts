@@ -1,14 +1,21 @@
 import { Environment } from '../enums/environment.enum';
+import { configSchema } from './config.schema';
 
 require('dotenv-safe').config();
 
+const { error, value } = configSchema.validate(process.env);
+
+if (error) {
+  throw new Error(error);
+}
+
 export const config =  {
-  port: process.env.PORT || '3000',
+  port: value.PORT || '3000',
   db: {
-    name: process.env.DB_NAME,
-    userName: process.env.DB_USERNAME,
-    pass: process.env.DB_PASS,
-    host: process.env.DB_HOST
+    name: value.DB_NAME,
+    userName: value.DB_USERNAME,
+    pass: value.DB_PASS,
+    host: value.DB_HOST
   },
   env: process.env.ENV || Environment.Dev
 };
