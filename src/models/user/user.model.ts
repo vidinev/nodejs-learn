@@ -1,12 +1,17 @@
-import { Table, Column, Model, IsUUID, PrimaryKey, Unique, BeforeCreate, DefaultScope } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  IsUUID,
+  PrimaryKey,
+  Unique,
+  BeforeCreate,
+  DataType,
+  Length
+} from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 const bCrypt = require('bcrypt');
 
-@DefaultScope(() => ({
-  attributes: {
-    exclude: ['password']
-  }
-}))
 @Table({
   timestamps: true
 })
@@ -14,32 +19,38 @@ export class User extends Model<User> {
 
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.TEXT)
   id: string;
 
-  @Column
+  @Length({ min: 4, max: 20 })
+  @Column(DataType.TEXT)
   nickname: string;
 
   @Unique
-  @Column
+  @Length({ min: 3, max: 320 })
+  @Column(DataType.TEXT)
   email: string;
 
-  @Column
+  @Column(DataType.BOOLEAN)
   emailVerified: boolean;
 
-  @Column
+  @Length({ min: 4, max: 50 })
+  @Column(DataType.TEXT)
   phone: string;
 
-  @Column
+  @Column(DataType.BOOLEAN)
   phoneVerified: boolean;
 
-  @Column
+  @Length({ min: 2, max: 20 })
+  @Column(DataType.TEXT)
   firstName: string;
 
-  @Column
+  @Length({ min: 2, max: 20 })
+  @Column(DataType.TEXT)
   lastName: string;
 
-  @Column
+  @Length({ min: 6, max: 30 })
+  @Column(DataType.TEXT)
   password: string;
 
   @BeforeCreate
