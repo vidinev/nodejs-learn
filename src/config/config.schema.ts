@@ -13,5 +13,6 @@ export const configSchema = Joi.object({
   DB_PASS: Joi.string().required().trim().min(2).max(64),
   DB_HOST: Joi.string().required().trim().regex(hostRegex()),
   DB_USERNAME: Joi.string().required().trim().regex(dbNameRegex()),
+  JWT: Joi.string().required(),
   ENV: Joi.string().required().lowercase().trim().valid(Environment.Dev, Environment.Prod),
 }).unknown();

@@ -17,5 +17,6 @@ export const config =  {
     pass: value.DB_PASS,
     host: value.DB_HOST
   },
-  env: process.env.ENV || Environment.Dev
+  jwtSecret: value.JWT,
+  env: value.ENV || Environment.Dev
 };
